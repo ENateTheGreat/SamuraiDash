@@ -1,3 +1,7 @@
+/* Author: E. Nathan Lee
+ * Date: 12/7/2025
+ * Description: Victory UI script to handle the panel and button actions
+ */
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,23 +11,24 @@ using UnityEngine.UI;
 public class VictoryUI : MonoBehaviour
 {
     [Header("UI")]
-    [SerializeField] private CanvasGroup victoryPanelGroup;
-    [SerializeField] private Image overlay;
-    [SerializeField] private Button nextLevelButton;
+    [SerializeField] private CanvasGroup victoryPanelGroup; // Victory UI
+    [SerializeField] private Image overlay; // Faded overlay
+    [SerializeField] private Button nextLevelButton; // UI button
 
     [Header("Fade Settings")]
     [SerializeField] private float overlayTargetAlpha = 0.2f; // 20% dark
-    [SerializeField] private float overlayFadeDuration = 0.5f;
-    [SerializeField] private float panelFadeDuration = 0.4f;
+    [SerializeField] private float overlayFadeDuration = 0.5f; // 1/2 second fade
+    [SerializeField] private float panelFadeDuration = 0.4f; // 0.4 second fade
 
     [Header("Scene Names")]
-    [SerializeField] private string mainMenuScene = "MainMenu";
-    [SerializeField] private string nextLevel;
+    [SerializeField] private string mainMenuScene = "MainMenu"; // Main menu scene name
+    [SerializeField] private string nextLevel; // Next level scene variable
 
-    private bool shown = false;
+    private bool shown = false; // UI state
 
     private void Awake()
     {
+        // On awake, set the default states -- invisible and non-interactable
         victoryPanelGroup.alpha = 0f;
         victoryPanelGroup.interactable = false;
         victoryPanelGroup.blocksRaycasts = false;
@@ -34,6 +39,7 @@ public class VictoryUI : MonoBehaviour
         overlay.color = c;
     }
 
+    // Victory display logic
     public void ShowVictory()
     {
         if (shown) return;
@@ -41,6 +47,7 @@ public class VictoryUI : MonoBehaviour
         StartCoroutine(VictorySequence());
     }
 
+    // Timed fade-in sequence
     private IEnumerator VictorySequence()
     {
         float t = 0f;
@@ -77,6 +84,7 @@ public class VictoryUI : MonoBehaviour
         victoryPanelGroup.blocksRaycasts = true;
     }
 
+    // Next level button logic with next proper scene detection
     public void OnNextLevelButton()
     {
         Debug.Log("Loading Next Level Scene.");
@@ -108,6 +116,7 @@ public class VictoryUI : MonoBehaviour
         }
     }
 
+    // Main menu button logic
     public void OnMainMenuButton()
     {
         Debug.Log("Loading Main Menu Scene: " + mainMenuScene);

@@ -1,23 +1,27 @@
+/* Author: E. Nathan Lee
+ * Date: 12/7/2025
+ * Description: The turret shooter script for firing projectiles handling animation and frequency.
+ */
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TurretShooter : MonoBehaviour
 {
-    public Transform firePoint;
-    public GameObject projectile;
-    public float fireRate = 1.5f;
-    public float projectileSpeed = 15f;
+    public Transform firePoint; // Where projectiles spawn
+    public GameObject projectile; // Shuriken Prefab
+    public float fireRate = 1.5f; // Time between shots
+    public float projectileSpeed = 15f; // Speed of projectile
 
-    private float fireTimer;
-    private Animator anim;
+    private float fireTimer; // Timer to track firing
+    private Animator anim; // Animator reference
 
     private void Awake()
     {
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponentInChildren<Animator>(); // Get animator from child object
     }
 
-    // Start is called before the first frame update
+    // Start for initial shot
     void Start()
     {
         fireTimer -= Time.deltaTime;
@@ -29,6 +33,7 @@ public class TurretShooter : MonoBehaviour
         }
     }
 
+    // Shooting update with timer
     void Update()
     {
         fireTimer -= Time.deltaTime;
@@ -39,7 +44,7 @@ public class TurretShooter : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    // Shooting logic
     void Shoot()
     {
         if (anim != null)

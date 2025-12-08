@@ -1,3 +1,8 @@
+/* Author: E. Nathan Lee
+ * Date: 12/7/2025
+ * Description: The main player controller script. This handles movement, animations, "abilities",
+ *              death sequences, win sequences, and sound.
+ */
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -106,13 +111,19 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Game object component references
         rb2d = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        topCollider.enabled = true;
-        gravityScale = rb2d.gravityScale;
+
+        topCollider.enabled = true; // Top collider enabled on start
+        gravityScale = rb2d.gravityScale; // Default gravity scale
+
+        // Sound handling
         running.Play();
         running.Pause();
         running.loop = true;
+
+        // Death state
         isDead = false;
     }
 
@@ -121,7 +132,7 @@ public class PlayerController : MonoBehaviour
     //=======
     void Update()
     {
-        if (isDead || isWin)
+        if (isDead || isWin) // Exit for control prevention on condition
         {
             movementInput = 0f;
             return; // Early out if dead
@@ -137,7 +148,7 @@ public class PlayerController : MonoBehaviour
         bool isMoving = Mathf.Abs(movementInput) > moveThreshold;
         bool shouldPlay = isGrounded && isMoving;
 
-        if (shouldPlay && !isDead)
+        if (shouldPlay && !isDead) // Is moving and not dead, play sound
         {
             running.UnPause();
         }
@@ -147,10 +158,10 @@ public class PlayerController : MonoBehaviour
         }
 
 
-            //==============================
-            // Animation Trigger and Timing
-            //==============================
-            anim.SetFloat("Speed", Mathf.Abs(movementInput)); // Speed paramater for running animation
+        //==============================
+        // Animation Trigger and Timing
+        //==============================
+        anim.SetFloat("Speed", Mathf.Abs(movementInput)); // Speed paramater for running animation
 
         timer -= Time.deltaTime; // Timer for idle fidget animations
 
@@ -199,7 +210,7 @@ public class PlayerController : MonoBehaviour
             jumpPressed = true;
             anim.SetBool("dodge", true);
             StartCoroutine(DodgeRoll());
-            dashJumpAmount--;
+            dashJumpAmount--; // Added to limit dash-jump to once per air time
         }
 
         if (dashJumpAmount == 0 && isGrounded) // Reset dash jump amount when grounded
@@ -264,7 +275,6 @@ public class PlayerController : MonoBehaviour
         isDodging = true;
         dodgeLock = true;
         topCollider.enabled = false;
-        //////////////////////////// new //////////////////////////////
         float verticalVelocity = rb2d.velocity.y;
 
         if (isGrounded)
@@ -303,6 +313,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Function for preventing top collider clipping when standing up after dodge roll
     bool CanStandUp()
     {
         Vector2 size = topCollider.bounds.size;
@@ -317,6 +328,7 @@ public class PlayerController : MonoBehaviour
         return hit == null;
     }
 
+    // Death detection
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Death"))
@@ -325,6 +337,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Death function
     void Die()
     {
         if (isDead || isWin) return; // Early out if already dead
@@ -337,6 +350,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    // Timed death sequence
     private IEnumerator DeathSequence()
     {
         yield return new WaitForSeconds(deathAnimDelay);
@@ -372,6 +386,7 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    // Victory function
     public void EnterVictoryState()
     {
         isWin = true;
